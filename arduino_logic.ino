@@ -4,16 +4,17 @@ Servo servoX;
 Servo servoY;
 
 int posX = 45;
-int posY = 120; // ZMIANA: Zaczynamy od 120 (góra), a nie od 60
+int posY = 120; 
 int stepX = 1;
 
 void setup() {
-  Serial1.begin(9600);
+
+  Serial1.begin(9600); 
   servoX.attach(9);
   servoY.attach(10);
-  
+   
   servoX.write(posX);
-  servoY.write(posY); // Serwo pojedzie na samą górę (120 stopni)
+  servoY.write(posY);
   delay(1000); 
 }
 
@@ -21,17 +22,17 @@ void loop() {
   if (Serial1.available() > 0) {
     char cmd = Serial1.read();
     
+
     if (cmd == 'G') {
       posX += stepX;
 
       if (posX > 135 || posX < 45) {
         stepX = -stepX; 
         posX += stepX;  
-        posY -= 1;      // ZMIANA: Odejmujemy, aby serwo schodziło w dół (120 -> 119 -> ...)
+        posY -= 1;      
       }
 
-      // Sprawdź koniec skanowania (osiągnęliśmy dół zakresu)
-      if (posY < 60) {  // ZMIANA: Sprawdzamy dolną granicę
+      if (posY < 60) {  
         posY = 120; 
         posX = 45;
         stepX = 1;
@@ -40,8 +41,12 @@ void loop() {
       servoX.write(posX);
       servoY.write(posY);
       
-      delay(35); 
-      Serial1.print('R');
+      delay(35);
+      
+      Serial1.print("R,");
+      Serial1.print(posX);
+      Serial1.print(",");
+      Serial1.println(posY);
     }
   }
 }
